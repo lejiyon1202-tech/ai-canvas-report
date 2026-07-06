@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI CANVAS 활용 실적 보고</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%232563eb'/%3E%3Ctext x='16' y='22' font-size='16' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'%3EA%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/report-exec.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<!-- 활용 실적 보고 (탭 구조) — 탭 네비게이션 외 조작 요소 없음 (인쇄 버튼 제외) · 전 수치 API 바인딩 (하드코딩 0)
+     인쇄 시 탭 무시 전체 출력 (@media print) -->
+<div class="exec-toolbar no-print">
+  <button id="exec-print-btn">🖨 인쇄 / PDF 저장</button>
+</div>
+
+<main class="exec-page">
+  <!-- 헤드라인 (탭 상단 고정) -->
+  <header class="exec-header">
+    <div class="exec-title">
+      <h1>AI CANVAS 활용 실적 보고</h1>
+      <p class="exec-subtitle" id="ex-period">데이터 로딩 중…</p>
+    </div>
+  </header>
+  <section class="exec-hero" id="block-headline">
+    <div class="hero-stat"><div class="hero-num" id="ex-orgs">—</div><div class="hero-label">도입 기업</div></div>
+    <div class="hero-stat"><div class="hero-num" id="ex-projects">—</div><div class="hero-label">운영 과정</div></div>
+    <div class="hero-stat"><div class="hero-num" id="ex-learners">—</div>
+      <div class="hero-label">참여 학습자 <span class="hero-sub" id="ex-learners-sub"></span></div></div>
+    <div class="hero-stat"><div class="hero-num" id="ex-records">—</div>
+      <div class="hero-label">평가 데이터 <span class="hero-sub" id="ex-ai-items"></span></div></div>
+  </section>
+
+  <!-- N1 핵심 요약 (v1.4 — 탭 밖 고정·문장 내 인라인 한정어 필수) -->
+  <section class="exec-summary" id="block-summary">
+    <h2>핵심 요약</h2>
+    <div id="ex-exec-summary"></div>
+  </section>
+
+  <!-- 탭 네비게이션 (대장님 지시 — 조작 요소 예외·합의 v1.2) -->
+  <nav class="tab-nav no-print" id="exec-tabs">
+    <button class="tab-btn active" data-tab="usage">실적 · 활용</button>
+    <button class="tab-btn" data-tab="effect">효과 · 신뢰도</button>
+    <button class="tab-btn" data-tab="insight">인사이트</button>
+    <button class="tab-btn" data-tab="voice">학습자 목소리 · 품질</button>
+  </nav>
+
+  <!-- 탭 ① 실적·활용 -->
+  <div class="tab-content active" id="tab-usage">
+    <section class="exec-section" id="block-types">
+      <h2>솔루션 유형별 활용</h2>
+      <div class="types-layout">
+        <div class="donut-wrap">
+          <h3 class="chart-title">평가 데이터 구성 (건수 기준 · 대화·음성 기록 포함)</h3>
+          <div class="canvas-wrap canvas-wrap--donut"><canvas id="chart-type-donut"></canvas></div>
+        </div>
+        <div class="type-grid" id="ex-types"></div>
+      </div>
+    </section>
+    <section class="exec-section" id="block-attempts">
+      <h2>평가 응시 현황</h2>
+      <div class="attempt-grid" id="ex-attempts"></div>
+      <div class="caveat-inline" id="ex-attempts-note"></div>
+    </section>
+    <section class="exec-section" id="block-readopt">
+      <h2>재도입 · 병행 도입 현황</h2>
+      <div class="insight-grid">
+        <div class="insight-panel"><h3>복수 과정 도입 기업 — 다시 찾은 고객</h3><div id="ex-readopt"></div></div>
+        <div class="insight-panel"><h3>진단 + 실습 병행 도입 효과</h3><div id="ex-parallel"></div></div>
+      </div>
+      <div class="insight-grid">
+        <div class="insight-panel"><h3>복수 솔루션 참여 조합 — 진단에서 실습으로</h3><div id="ex-combos"></div></div>
+        <div class="insight-panel"><h3>기업별 선호 훈련 주제</h3><div id="ex-org-topics"></div></div>
+      </div>
+    </section>
+    <section class="exec-section" id="block-timeline">
+      <h2>월별 활용 추이</h2>
+      <div class="canvas-wrap"><canvas id="chart-timeline-exec"></canvas></div>
+      <div class="caveat-inline" id="ex-timeline-note"></div>
+    </section>
+  </div>
+
+  <!-- 탭 ② 효과·신뢰도 -->
+  <div class="tab-content" id="tab-effect">
+    <section class="exec-section" id="block-effect">
+      <h2>교육 효과 · 채점 신뢰도</h2>
+      <div class="effect-grid">
+        <div class="effect-card" id="ex-growth"></div>
+        <div class="effect-card" id="ex-kappa"></div>
+      </div>
+    </section>
+    <section class="exec-section" id="block-growth-detail">
+      <h2>향상도 상세 — 기업 × 역량 상승 상위 (사전 → 사후)</h2>
+      <div class="canvas-wrap canvas-wrap--tall"><canvas id="chart-dumbbell"></canvas></div>
+      <div class="caveat-inline" id="ex-growth-note"></div>
+    </section>
+  </div>
+
+  <!-- 탭 ③ 인사이트 -->
+  <div class="tab-content" id="tab-insight">
+    <section class="exec-section" id="block-topics-full">
+      <h2>훈련 주제 — 인기와 채점 분포</h2>
+      <div class="insight-grid">
+        <div class="insight-panel"><h3>참여 많은 훈련 상황 TOP</h3><div id="ex-popular-topics"></div></div>
+        <div class="insight-panel"><h3>주제별 AI 채점 평균 (전체)</h3><div id="ex-topics"></div></div>
+      </div>
+      <div class="caveat-inline" id="ex-topics-note"></div>
+      <h3 class="voice-subhead">주제 × 역량 교차 — 어떤 훈련 상황이 어떤 역량을 단련하는가</h3>
+      <div id="ex-topic-cross"></div>
+    </section>
+    <section class="exec-section" id="block-comp-dist">
+      <h2>역량 진단 결과 분포</h2>
+      <div class="insight-grid">
+        <div class="insight-panel"><h3>AI 채점 — 역량 카테고리별 평균</h3>
+          <div class="canvas-wrap canvas-wrap--radar"><canvas id="chart-radar-ai"></canvas></div></div>
+        <div class="insight-panel"><h3>자기평가 — 역량별 상·하위</h3>
+          <div class="canvas-wrap canvas-wrap--radar"><canvas id="chart-radar-self"></canvas></div></div>
+      </div>
+      <div class="caveat-inline" id="ex-comp-note"></div>
+      <h3 class="voice-subhead">교육 수요 신호 — 평균 하위 10</h3>
+      <div id="ex-gap-detail"></div>
+    </section>
+    <section class="exec-section" id="block-diag-link">
+      <h2>발견 — 자기 인식과 실제 행동의 간극</h2>
+      <div class="linkage-layout">
+        <div class="callout-card" id="ex-linkage"></div>
+        <div class="canvas-wrap canvas-wrap--scatter">
+          <h3 class="chart-title">학습자별 자기평가 × AI 채점 (52명)</h3>
+          <canvas id="chart-scatter-linkage"></canvas>
+        </div>
+      </div>
+    </section>
+    <section class="exec-section" id="block-benchmark">
+      <h2>기업 간 위치 — AI 채점 종합</h2>
+      <div class="canvas-wrap canvas-wrap--tall"><canvas id="chart-benchmark"></canvas></div>
+      <div class="caveat-inline" id="ex-benchmark-note"></div>
+    </section>
+  </div>
+
+  <!-- 탭 ④ 목소리·품질 -->
+  <div class="tab-content" id="tab-voice">
+    <section class="exec-section" id="block-voices">
+      <h2>학습자의 목소리</h2>
+      <h3 class="voice-subhead">성찰 주제 분포</h3>
+      <div class="theme-grid" id="ex-themes"></div>
+      <h3 class="voice-subhead">자주 나온 표현 (2어절 구 · 근거 원문 병기)</h3>
+      <div id="ex-phrases"></div>
+      <h3 class="voice-subhead">자필 성찰 (원문 그대로 · 익명)</h3>
+      <div class="voice-grid" id="ex-quotes"></div>
+    </section>
+    <section class="exec-section" id="block-quality">
+      <h2>데이터 신뢰 근거</h2>
+      <div class="quality-narrative" id="ex-quality-narrative"></div>
+    </section>
+    <section class="exec-section" id="block-roadmap">
+      <h2>다음 단계 — 데이터 개선 로드맵</h2>
+      <div class="quality-narrative" id="ex-roadmap"></div>
+    </section>
+    <footer class="exec-footer">
+      <div class="quality-line" id="ex-quality">—</div>
+      <div class="exec-footnotes" id="ex-footnotes"></div>
+      <div class="exec-more">상세 데이터·세부 분석은 통합 대시보드에서 확인할 수 있습니다.</div>
+    </footer>
+  </div>
+</main>
+
+<script type="module" src="js/report-exec.js"></script>
+</body>
+</html>
