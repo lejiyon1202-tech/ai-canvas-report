@@ -33,3 +33,27 @@ export const TYPE_COLORS = {
   diagnosis_self: '#d97706', diagnosis_ai: '#7c3aed',
   utterance_log: '#6b7280', presentation: '#db2777', default: '#6b7280',
 };
+
+const NOTE_CLASSES = ['panel-note', 'caveat-inline', 'type-footnote', 'summary-note', 'caveat-item'];
+export function makeCollapsible(el, visible = 5) {
+  if (!el || el.classList.contains('list-collapsible')) return;
+  if (el.tagName === 'TBODY' || el.tagName === 'TABLE') return;
+  const items = [...el.children].filter(c => !NOTE_CLASSES.some(k => c.classList.contains(k)));
+  if (items.length <= visible) return;
+  items.forEach(c => c.classList.add('list-item'));
+  el.classList.add('list-collapsible', 'collapsed');
+  el.dataset.visible = String(visible);
+  const hidden = items.length - visible;
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'list-toggle';
+  const sync = () => {
+    const collapsed = el.classList.contains('collapsed');
+    btn.setAttribute('aria-expanded', String(!collapsed));
+    btn.innerHTML = `<span class="list-toggle-count">${collapsed ? `+${hidden}개 더 보기` : '접기'}</span>`;
+  };
+  btn.addEventListener('click', () => { el.classList.toggle('collapsed'); sync(); });
+  sync();
+  const note = el.querySelector(NOTE_CLASSES.map(c => `:scope > .${c}`).join(', '));
+  el.insertBefore(btn, note);
+}

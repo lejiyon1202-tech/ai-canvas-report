@@ -1,5 +1,5 @@
 
-import { displayScenario } from './utils.js';
+import { displayScenario, makeCollapsible } from './utils.js';
 
 const esc = s => String(s ?? '').replace(/[&<>"']/g,
   c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -379,6 +379,10 @@ async function init() {
     '병행 도입 효과는 연관성 지표이며 인과 관계가 아닙니다',
     '기업명은 익명 처리했습니다 (A사·B사…) — 원본 대응표는 내부 관리',
   ].map((f, i) => `<div>${i + 1}. ${esc(f)}</div>`).join('');
+
+  ['ex-popular-topics', 'ex-topics', 'ex-topic-cross', 'ex-readopt', 'ex-combos',
+   'ex-org-topics', 'ex-gap-detail', 'ex-quotes', 'ex-phrases', 'ex-themes']
+    .forEach(id => makeCollapsible(document.getElementById(id)));
 }
 
 document.querySelectorAll('#exec-tabs .tab-btn').forEach(btn => {
