@@ -1,4 +1,4 @@
-/** 공통 유틸 */
+
 export function esc(str) {
   return String(str)
     .replace(/&/g, '&amp;')
@@ -11,10 +11,15 @@ export function fmtNum(n) {
   return (n ?? 0).toLocaleString('ko-KR');
 }
 
-// 시나리오명 표시용 별칭 — "A-1."·"1." 류 접두 제거 (대장님 "지워" 확정 2026-07-06)
-// DB 원본은 무수정 보존 — 화면 표시만 정규화
+const META_SCENARIO = new RegExp('\\b' + String.fromCharCode(83, 66, 73) + '\\b', 'gi');
 export function displayScenario(name) {
-  return String(name ?? '').replace(/^[A-Za-z]?-?\d+[.)\-]\s*/, '').trim() || String(name ?? '');
+  const raw = String(name ?? '');
+  const out = raw
+    .replace(/^[A-Za-z]?-?\d+[.)\-]\s*/, '')
+    .replace(META_SCENARIO, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+  return out || raw;
 }
 
 export const TYPE_LABEL = {

@@ -11,14 +11,13 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
-<!-- APL 데이터 인사이트 (탭 구조) — 탭 네비게이션 외 조작 요소 없음 (인쇄 버튼 제외) · 전 수치 API 바인딩 (하드코딩 0)
-     인쇄 시 탭 무시 전체 출력 (@media print) -->
+
 <div class="exec-toolbar no-print">
   <button id="exec-print-btn">🖨 인쇄 / PDF 저장</button>
 </div>
 
 <main class="exec-page">
-  <!-- 헤드라인 (탭 상단 고정) -->
+  
   <header class="exec-header">
     <div class="exec-title">
       <h1>APL 데이터 인사이트</h1>
@@ -34,13 +33,13 @@
       <div class="hero-label">평가 데이터 <span class="hero-sub" id="ex-ai-items"></span></div></div>
   </section>
 
-  <!-- N1 핵심 요약 (v1.4 — 탭 밖 고정·문장 내 인라인 한정어 필수) -->
+  
   <section class="exec-summary" id="block-summary">
     <h2>핵심 요약</h2>
     <div id="ex-exec-summary"></div>
   </section>
 
-  <!-- 탭 네비게이션 (대장님 지시 — 조작 요소 예외·합의 v1.2) -->
+  
   <nav class="tab-nav no-print" id="exec-tabs">
     <button class="tab-btn active" data-tab="usage">실적 · 활용</button>
     <button class="tab-btn" data-tab="effect">효과 · 신뢰도</button>
@@ -48,7 +47,7 @@
     <button class="tab-btn" data-tab="voice">학습자 목소리 · 품질</button>
   </nav>
 
-  <!-- 탭 ① 실적·활용 -->
+  
   <div class="tab-content active" id="tab-usage">
     <section class="exec-section" id="block-types">
       <h2>솔루션 유형별 활용</h2>
@@ -83,7 +82,7 @@
     </section>
   </div>
 
-  <!-- 탭 ② 효과·신뢰도 -->
+  
   <div class="tab-content" id="tab-effect">
     <section class="exec-section" id="block-effect">
       <h2>교육 효과 · 채점 신뢰도</h2>
@@ -99,7 +98,7 @@
     </section>
   </div>
 
-  <!-- 탭 ③ 인사이트 -->
+  
   <div class="tab-content" id="tab-insight">
     <section class="exec-section" id="block-topics-full">
       <h2>훈련 주제 — 인기와 채점 분포</h2>
@@ -140,7 +139,7 @@
     </section>
   </div>
 
-  <!-- 탭 ④ 목소리·품질 -->
+  
   <div class="tab-content" id="tab-voice">
     <section class="exec-section" id="block-voices">
       <h2>학습자의 목소리</h2>

@@ -1,7 +1,4 @@
-/**
- * APL 데이터 인사이트 (확장판) — 전 수치 API 바인딩 · 하드코딩 0 · 조작 요소 0
- * 하단·블록별 각주는 수치 해석 조건 표기 — 임의 삭제 금지
- */
+
 import { displayScenario } from './utils.js';
 
 const esc = s => String(s ?? '').replace(/[&<>"']/g,
@@ -19,7 +16,6 @@ const TYPE_ICON = {
 
 async function j(url) { return (await fetch(url.replace('/api/', 'api/') + '.json')).json(); }
 
-// 차트 색 — CSS 토큰 주입 (하드코딩 0 · 색 팔레트는 기안84 CSS 전권)
 function cssVar(name) {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 }
@@ -32,7 +28,6 @@ function palette() {
 }
 const CHART_FONT = { family: "'Pretendard', 'Malgun Gothic', sans-serif", size: 12 };
 
-// 기업이 아닌 org 라벨 (레퍼런스 사이클 확립 — AX Navigator는 프로그램명·기업 수 산정 제외)
 const NON_ORG_LABELS = new Set(["사내 AX 프로그램"]);
 
 function miniRow(label, sub, pct, tail) {
@@ -50,7 +45,6 @@ async function init() {
     j('/api/benchmark'), j('/api/insights'),
   ]);
 
-  // 헤드라인 — 전체 수치는 "평가 데이터" 라벨(자기평가 포함이므로) + AI 채점 항목 수 별도 병기
   const u = overview.usage;
   document.getElementById('ex-orgs').textContent = `${u.orgs}개사`;
   document.getElementById('ex-projects').textContent = `${u.projects}개`;
@@ -64,7 +58,6 @@ async function init() {
   document.getElementById('ex-period').textContent =
     `실 운영 데이터 기준 · ${u.orgs}개사 ${u.projects}개 과정`;
 
-  // N1 핵심 요약 — 각 줄 인라인 한정어 필수 (참조 각주만으로는 단독 인용 시 과대 — 확정 사양)
   const topG = growth.delta_by_org_competency.top[0];
   const opsK = quality.kappa?.ops;
   const lkR = linkage.a_self_vs_ai;
@@ -78,7 +71,6 @@ async function init() {
     </ul>
     <div class="summary-note">상세 수치·해석 조건은 각 탭의 각주 참조</div>`;
 
-  // N2 응시 행태
   const at = quality.attempt_stats;
   if (at) {
     document.getElementById('ex-attempts').innerHTML = [
@@ -90,7 +82,6 @@ async function init() {
     document.getElementById('ex-attempts-note').textContent = at.note;
   }
 
-  // 유형별 활용 — 표본 미달(참여 3명 미만) 카드 제외 + 각주 병기 (제외분 미고지 방지)
   const mainTypes = overview.by_type
     .filter(t => t.solution_type !== 'utterance_log' && t.participants != null && t.participants >= 3);
   const tinyTypes = overview.by_type
@@ -106,7 +97,6 @@ async function init() {
     + (tinyTypes.length ? `<div class="type-footnote">※ ${tinyTypes.map(t =>
         `${esc(TYPE_LABEL[t.solution_type] || t.solution_type)} ${fmt(t.participants)}명`).join(' · ')} — 참여 인원이 적어 카드 없이 표기</div>` : '');
 
-  // 유형 도넛 — "평가 데이터 구성 (활동 로그 포함)" · EFF_TYPE 귀속 레코드 (㉮ 확정 — 합 = 비test 전체)
   const eff = overview.records_by_eff_type || [];
   const donutPal = [palette().indigo, palette().amber, palette().green, palette().violet, palette().sky];
   new Chart(document.getElementById('chart-type-donut'), {
@@ -124,7 +114,6 @@ async function init() {
     },
   });
 
-  // A. 재도입 — 복수 과정 도입 기업
   const maxProj = overview.readoption[0]?.projects || 1;
   const readoptOrgs = overview.readoption.filter(r => !NON_ORG_LABELS.has(r.org_name)).length;
   document.getElementById('ex-readopt').innerHTML = overview.readoption.slice(0, 8).map(r =>
@@ -132,7 +121,6 @@ async function init() {
       `${r.solution_types}개 유형`, r.projects / maxProj * 100, `${r.projects}개 과정`)).join('')
     + `<div class="panel-note">2개 과정 이상 도입 기업 ${readoptOrgs}개사 (프로그램 단위 제외) — 도입 후 추가 과정으로 이어진 고객</div>`;
 
-  // N8 복수 솔루션 조합 분포 (EFF 귀속·참여 정의 v1.1)
   const combos = overview.multi_combos || [];
   const maxCombo = combos[0]?.learners || 1;
   const comboLabel = c => c.split(',').map(t => TYPE_LABEL[t] || t).join(' + ');
@@ -140,14 +128,12 @@ async function init() {
     miniRow(comboLabel(c.combo), '', c.learners / maxCombo * 100, `${fmt(c.learners)}명`)).join('')
     + `<div class="panel-note">복수 유형 참여 학습자 ${fmt(combos.reduce((a, c) => a + c.learners, 0))}명 — 재도입(과정 단위 집계)과는 다른, 학습자 단위 기준입니다</div>`;
 
-  // N6 기업별 선호 훈련 주제
   const orgTopics = overview.topics.org_top_scenarios || [];
   const maxOT = orgTopics[0]?.learners || 1;
   document.getElementById('ex-org-topics').innerHTML = orgTopics.map(o =>
     miniRow(o.org_name, o.scenario, o.learners / maxOT * 100, `${fmt(o.learners)}명`)).join('')
     + `<div class="panel-note">기업별 최다 참여 시나리오 (학습자 5명 이상 기준)</div>`;
 
-  // A. 병행 도입 효과 — 학습자/기업 단위 병기 (N9 — 카베앗 ③ 전문 의무)
   const pOrgs = parallel.parallel.orgs.map(o => esc(o.org_name)).join(' · ');
   const lkGroups = linkage.b_parallel_vs_only.groups;
   const gPar = lkGroups.find(g => g.grp === 'parallel');
@@ -165,7 +151,6 @@ async function init() {
       ⚠ 다만 학습자 단위 차이에는 병행 도입 기업의 구성 특성이 반영됐을 수 있고
       (병행 기업 ${parallel.parallel.orgs.length}개사 소표본), 인과 관계로 해석할 수 없습니다.</div>`;
 
-  // H. 월별 활용 추이 — 라인(영역) 차트 (v1.3 차트 다양화)
   const months = timeline.monthly || [];
   const pal = palette();
   new Chart(document.getElementById('chart-timeline-exec'), {
@@ -187,19 +172,16 @@ async function init() {
   document.getElementById('ex-timeline-note').textContent =
     `실습 계열(롤플레잉·인바스켓·대화 기록) 기준 — 진단은 평가 일시가 기록되지 않은 경우가 많아 추이에서 제외했으며, 날짜 정보가 없는 ${fmt(timeline.unknown_records)}건도 포함하지 않았습니다`;
 
-  // B. 인기 훈련 상황 TOP — 시나리오 접두(번호 등) 표시 제거 (전 지점 통일·대장님 확정 규칙)
   const pop = overview.topics.roleplay_scenarios.slice(0, 8);
   const maxPop = pop[0]?.learners || 1;
   document.getElementById('ex-popular-topics').innerHTML = pop.map(s =>
     miniRow(displayScenario(s.scenario), `${s.orgs}개사`, s.learners / maxPop * 100, `${fmt(s.learners)}명`)).join('');
 
-  // B. 주제×효과 전체
   document.getElementById('ex-topics').innerHTML = topics.topics.map(t =>
     miniRow(t.topic, `${fmt(t.records)}건`, t.avg_pct, `${t.avg_pct}%`)).join('');
   document.getElementById('ex-topics-note').textContent =
     `시나리오 이름이 기록된 데이터만 집계 (전체의 약 ${Math.round((100 - topics.meta.scenario_missing_pct) * 10) / 10}%) · 참여가 적은 ${topics.meta.excluded_small}개 주제는 제외 · 주제 간 점수 차는 난이도 영향을 포함하므로 우열을 가리는 자료가 아닙니다`;
 
-  // N10 주제×역량 교차
   document.getElementById('ex-topic-cross').innerHTML = (topics.topic_categories || []).map(t => `
     <div class="topic-cross-row">
       <div class="cross-topic">${esc(t.topic)}</div>
@@ -207,7 +189,6 @@ async function init() {
         `${esc(c.category)} ${c.avg_pct}% <small>(${fmt(c.n)}건)</small>`).join(' · ')}</div>
     </div>`).join('');
 
-  // 효과·신뢰도
   const top = growth.delta_by_org_competency.top[0];
   document.getElementById('ex-growth').innerHTML = `
     <div class="effect-head">사전 → 사후 향상</div>
@@ -230,8 +211,7 @@ async function init() {
           <div class="effect-note">이중 검증: 상급 모델 표준 루브릭 κ ${quality.kappa.all ? Math.round(quality.kappa.all.weighted_kappa * 100) / 100 : '—'} 별도 산출 — 두 κ는 표본·척도·루브릭이 달라 서로 비교할 수 없습니다</div>
         </div>
       </div>`;
-    // N11 상급 모델 κ 병기 — "비교 불가" 각주는 effect-note에 이미 포함 (표본·척도·루브릭 상이)
-    // ±10점 일치 게이지 도넛 (단일 비율 — v1.3)
+
     new Chart(document.getElementById('chart-kappa'), {
       type: 'doughnut',
       data: { labels: ['±10점 내 일치', '이탈'],
@@ -244,7 +224,6 @@ async function init() {
     document.getElementById('ex-kappa').innerHTML = '';
   }
 
-  // C. 향상도 상세 — 덤벨(사전→사후 플로팅 바 · v1.3)
   const gtop = growth.delta_by_org_competency.top.slice(0, 8);
   new Chart(document.getElementById('chart-dumbbell'), {
     type: 'bar',
@@ -268,7 +247,6 @@ async function init() {
   document.getElementById('ex-growth-note').textContent =
     '자기평가 사전/사후 (사후 응답자 기준 — 인식 변화 지표) · 사전/사후 각 30건 이상인 기업×역량만 표시';
 
-  // I. 역량 분포 — 레이더 2종 분리 (AI 카테고리 / 자기평가 역량 — 혼합 금지·별도 캔버스·v1.3)
   const radarOpts = {
     responsive: true, maintainAspectRatio: false,
     plugins: { legend: { display: false } },
@@ -298,13 +276,11 @@ async function init() {
   document.getElementById('ex-comp-note').textContent =
     'AI 채점(행동 기반)과 자기평가(응답 기반)는 척도가 달라 두 패널의 수치를 직접 비교할 수 없습니다 · 역량 간 점수 차는 난이도 영향 포함';
 
-  // N5 갭 개별 역량 하위 — 교육 수요 신호 (학습자 10명+ 추가 필터 — 결함 18 ㉮ 확정: 2명짜리 역량의 상위 노출 방지)
   const weakest = (gap.weakest_competencies || []).filter(c => c.learners >= 10);
   document.getElementById('ex-gap-detail').innerHTML = weakest.map(c =>
     miniRow(c.std_name, `${c.category} · ${fmt(c.learners)}명`, c.avg_pct, `${c.avg_pct}%`)).join('')
     + `<div class="panel-note">평균이 낮은 역량 = 교육 수요 신호 (난이도 영향을 포함하므로 서열을 가리는 자료가 아닙니다 · 평가 30건·참여 10명 이상 기준)</div>`;
 
-  // D. 진단↔실습 연계 — "자기 인식 ≠ 실제 행동 → 행동 기반 측정 보완 필요" 선까지만
   const lk = linkage.a_self_vs_ai;
   document.getElementById('ex-linkage').innerHTML = `
     <div class="callout-head">자기평가와 AI 채점(행동 기반)은 상관을 보이지 않았습니다</div>
@@ -314,7 +290,7 @@ async function init() {
       <strong>자기 인식과 실제 행동이 다를 수 있다</strong>는 신호로, 자기보고식 진단만으로는 한계가 있어
       행동 기반 측정(실습 채점)의 보완이 필요함을 시사합니다.</div>
     <div class="callout-note">${fmt(lk.n)}명 소표본 · 측정 방식이 다른 두 점수의 참고 지표 · 인과 관계 아님</div>`;
-  // 산점도 — 52명 실데이터 점 구름 (★ v1.3 최우선 — 무상관이 한눈에)
+
   new Chart(document.getElementById('chart-scatter-linkage'), {
     type: 'scatter',
     data: { datasets: [{
@@ -333,7 +309,6 @@ async function init() {
     },
   });
 
-  // E. 벤치마크 분포 — 도트 플롯 (기업 위치 · v1.3) — 내부 보고용 (org명 표기)
   const bmOrgs = benchmark.orgs || [];
   new Chart(document.getElementById('chart-benchmark'), {
     type: 'scatter',
@@ -356,12 +331,11 @@ async function init() {
   document.getElementById('ex-benchmark-note').textContent =
     `${benchmark.note} · 기업 간 점수 차는 과정·시나리오 난이도 영향을 포함하므로 서열을 가리는 자료가 아닙니다`;
 
-  // F. 목소리 — 테마 분포 + 인용 5건
   const themes = (refl.themes?.list || refl.themes || []).slice(0, 9);
   document.getElementById('ex-themes').innerHTML = themes.map(t => `
     <div class="theme-chip"><span class="theme-name">${esc(t.theme || t.name)}</span>
       <span class="theme-count">${fmt(t.n ?? t.count)}건</span></div>`).join('');
-  // N7 빈출 표현 (2어절 구) + 근거 원문
+
   const phrases = (refl.phrases?.list || []).slice(0, 6);
   document.getElementById('ex-phrases').innerHTML = phrases.map(ph => `
     <div class="phrase-item">
@@ -369,7 +343,6 @@ async function init() {
       <div class="phrase-example">${esc((ph.examples && ph.examples[0]) || ph.example || '')}</div>
     </div>`).join('');
 
-  // N4 인용 확대 5→8
   const quotes = (refl.quotes?.list || []).slice(0, 8);
   document.getElementById('ex-quotes').innerHTML = quotes.map(q => `
     <div class="voice-card">
@@ -377,7 +350,6 @@ async function init() {
       <div class="voice-meta">— 학습자 자필 성찰 (익명)</div>
     </div>`).join('');
 
-  // G. 품질 서사
   const testExcluded = quality.total_raw - quality.non_test;
   document.getElementById('ex-quality-narrative').innerHTML = `
     <p>본 보고서의 모든 수치는 실 운영 데이터에서 산출했습니다. 원자료 ${fmt(quality.total_raw)}건 중
@@ -389,7 +361,6 @@ async function init() {
   document.getElementById('ex-quality').textContent =
     `집계 기준: 테스트 제외 ${fmt(quality.non_test)}건 · 점수 보유 ${fmt(quality.analyzable)}건 · 신원 확인 학습자 ${fmt(u.learners)}명`;
 
-  // N3 개선 로드맵 — 수집 표준화 요청 5건 요약 (상태: 요청 중 — 확정 아님 명시)
   document.getElementById('ex-roadmap').innerHTML = `
     <p>데이터 품질을 한 단계 더 올리기 위해 수집 단계 표준화 5건을 플랫폼에 <strong>요청해 둔 상태</strong>입니다 (반영 확정 아님):</p>
     <ol class="roadmap-list">
@@ -400,7 +371,6 @@ async function init() {
       <li><strong>학습자 불변 식별자</strong> — 과정 간 성장 추적 정확도가 오르고 개인정보 취급은 줄어듭니다</li>
     </ol>`;
 
-  // 수치 해석 조건 각주 (축약형 — 임의 삭제 금지)
   document.getElementById('ex-footnotes').innerHTML = [
     '향상도는 자기평가 사전/사후 결과로, 사후 응답자 기준의 인식 변화 지표입니다',
     `채점 일관성 κ는 운영 채점기 기준(유효 ${ops ? fmt(ops.pairs) : '—'}쌍)이며, 상급 모델 κ는 표준 루브릭으로 별도 측정한 값입니다`,
@@ -411,13 +381,12 @@ async function init() {
   ].map((f, i) => `<div>${i + 1}. ${esc(f)}</div>`).join('');
 }
 
-// 탭 전환 — 표시 전환만 (바인딩은 init 1회 실행·재실행/데이터 변형 없음. 합의 v1.2)
 document.querySelectorAll('#exec-tabs .tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('#exec-tabs .tab-btn').forEach(b => b.classList.toggle('active', b === btn));
     document.querySelectorAll('.tab-content').forEach(p =>
       p.classList.toggle('active', p.id === `tab-${btn.dataset.tab}`));
-    // display:none 상태에서 생성된 차트는 크기 0 — 탭 표시 후 resize (표시 보정일 뿐 데이터 불변)
+
     requestAnimationFrame(() => {
       document.querySelectorAll(`#tab-${btn.dataset.tab} canvas`).forEach(c => {
         const ch = window.Chart && Chart.getChart(c);
