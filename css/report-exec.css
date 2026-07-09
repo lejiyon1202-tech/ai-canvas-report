@@ -22,7 +22,7 @@
 
   --text:       #f4f4f4;
   --sub:        rgba(244,244,244,.70);
-  --muted:      rgba(244,244,244,.42);
+  --muted:      rgba(244,244,244,.62);
   --white:      #f4f4f4;
 
   --border:     rgba(255,255,255,.06);
@@ -208,7 +208,7 @@ body {
   font-size: var(--text-xs);
   font-weight: 700;
   letter-spacing: .14em;
-  color: var(--accent);
+  color: var(--accent-sm);
   margin-bottom: var(--sp-lg);
 }
 
@@ -302,7 +302,7 @@ body {
 .hero-sub {
   display: block;
   font-size: var(--text-xs);
-  color: rgba(244,244,244,.28);
+  color: rgba(244,244,244,.60);
   margin-top: var(--sp-xs);
   font-weight: 400;
   text-transform: none;
@@ -338,7 +338,7 @@ body {
   padding: 0 var(--sp-lg);
   font-size: var(--text-xs);
   font-weight: 700;
-  color: rgba(244,244,244,.30);
+  color: rgba(244,244,244,.60);
   background: none;
   border: none;
   border-bottom: 2px solid transparent;
