@@ -33,17 +33,17 @@
   --navy:       #080808;
   --navy-mid:   #0e0e0e;
   --navy-glow:  rgba(192,0,0,.10);
-  --indigo:     #C00000;
-  --sky:        #8B0000;
-  --green:      #C00000;
-  --amber:      #C00000;
-  --violet:     #C00000;
-  --indigo-dark:#8B0000;
-  --indigo-vivid:#C00000;
-  --indigo-glow: rgba(192,0,0,.14);
+  --indigo:     #4A7DB5;   /* 슬레이트 블루 — 도넛·차트 계열 1 */
+  --sky:        #4FA8A3;   /* 틸 — 계열 5 */
+  --green:      #5A9E6F;   /* 다크 민트 — 계열 3 */
+  --amber:      #B5863A;   /* 골드 브론즈 — 계열 2 */
+  --violet:     #8A5CAA;   /* 뮤트 퍼플 — 계열 4 */
+  --indigo-dark:#3A6090;
+  --indigo-vivid:#5A90C8;
+  --indigo-glow: rgba(74,125,181,.14);
   --sky-light:  rgba(244,244,244,.80);
-  --deep-sky:   #C00000;
-  --teal:       #C00000;
+  --deep-sky:   #3A8A86;
+  --teal:       #4FA8A3;
   --rose:       #C00000;
   --slate-400:  rgba(244,244,244,.30);
   --slate-200:  rgba(244,244,244,.16);
@@ -516,15 +516,10 @@ body {
   transform: none;
 }
 
-/* 각 유형 상단 레드 바 (통일) */
-.type-card:nth-child(1),
-.type-card:nth-child(2),
-.type-card:nth-child(3),
-.type-card:nth-child(4) {
-  border-top: 2px solid var(--accent);
-}
+/* 상단 레드 바 제거 — 도넛 색으로 유형 구분 */
 
-.type-icon  { font-size: var(--text-icon); line-height: 1; margin-bottom: var(--sp-md); display: block; }
+.type-icon  { display: flex; justify-content: center; align-items: center; margin-bottom: var(--sp-md); color: var(--muted); }
+.type-icon svg { width: 32px; height: 32px; flex-shrink: 0; }
 .type-name  { font-size: var(--text-md); font-weight: 800; margin-bottom: var(--sp-xs); color: var(--text); }
 
 .type-num {
