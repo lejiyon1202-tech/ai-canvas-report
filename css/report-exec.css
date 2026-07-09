@@ -284,10 +284,10 @@ body {
   white-space: nowrap;
 }
 
-/* 3·4번 수치 레드 강조 */
+/* 3·4번 수치 — 흰색 (대장님 "개빨개" → 큰 숫자 흰색으로) */
 .exec-hero .hero-stat:nth-child(3) .hero-num,
 .exec-hero .hero-stat:nth-child(4) .hero-num {
-  color: var(--accent);
+  color: var(--text);
 }
 
 .hero-label {
@@ -354,7 +354,7 @@ body {
 .tab-btn:hover { color: var(--muted); }
 
 .tab-btn.active {
-  color: var(--accent-sm);        /* 11px UPPERCASE — WCAG AA */
+  color: var(--text);             /* 흰색 — 밑줄 레드로만 구분 */
   border-bottom-color: var(--accent);
   font-weight: 700;
 }
@@ -469,7 +469,7 @@ body {
   content: '·';
   font-size: var(--text-md);
   font-weight: 900;
-  color: var(--accent);
+  color: var(--muted);
   flex-shrink: 0;
   line-height: 1;
 }
@@ -531,7 +531,7 @@ body {
   font-size: var(--text-2xl);
   font-weight: 900;
   letter-spacing: -2px;
-  color: var(--accent);
+  color: var(--text);
   line-height: 1;
   margin: var(--sp-sm) 0 var(--sp-xs);
   font-variant-numeric: tabular-nums;
@@ -561,7 +561,7 @@ body {
 /* tc-* (시안 C 시용) */
 .type-card .tc-num   { font-size: var(--text-2xl); font-weight: 900; color: var(--text); letter-spacing: -1px; line-height: 1; }
 .type-card .tc-label { font-size: var(--text-xs); color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; }
-.type-card .tc-pct   { font-size: var(--text-sm); color: var(--accent-sm); font-weight: 700; }  /* 13px — WCAG AA */
+.type-card .tc-pct   { font-size: var(--text-sm); color: var(--sub); font-weight: 700; }
 
 /* ══ Effect ════════════════════════════════════════════════════ */
 .effect-grid {
@@ -609,7 +609,7 @@ body {
   font-size: clamp(40px, 5vw, 60px);
   font-weight: 900;
   letter-spacing: -3px;
-  color: var(--accent);
+  color: var(--text);
   line-height: 1;
   margin-bottom: var(--sp-sm);
   font-variant-numeric: tabular-nums;
@@ -735,12 +735,12 @@ body {
   flex: 0 0 44px;
   text-align: right;
   font-weight: 700;
-  color: var(--accent-sm);        /* 13px — WCAG AA */
+  color: var(--sub);
   font-variant-numeric: tabular-nums;
   font-size: var(--text-sm);
 }
 
-.insight-panel:nth-child(2) .mini-val { color: var(--accent-sm); }
+.insight-panel:nth-child(2) .mini-val { color: var(--sub); }
 
 /* ══ Voices ═════════════════════════════════════════════════════ */
 #block-voices { position: relative; overflow: hidden; }
@@ -912,7 +912,7 @@ body {
 .p-big {
   font-size: var(--text-xl);
   font-weight: 900;
-  color: var(--accent);
+  color: var(--text);
   font-variant-numeric: tabular-nums;
   letter-spacing: -1px;
   flex-shrink: 0;
@@ -949,7 +949,7 @@ body {
   opacity: .85;
 }
 
-.tl-val   { font-size: var(--text-xs); color: var(--accent-sm); font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }  /* 11px — WCAG AA */
+.tl-val   { font-size: var(--text-xs); color: var(--sub); font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .tl-month { font-size: var(--text-xs); color: var(--muted); white-space: nowrap; }
 
 /* ══ Callout card ═════════════════════════════════════════════ */
@@ -973,7 +973,7 @@ body {
 .callout-big {
   font-size: var(--text-2xl);
   font-weight: 900;
-  color: var(--accent);
+  color: var(--text);
   letter-spacing: -2px;
   font-variant-numeric: tabular-nums;
   margin-bottom: var(--sp-md);
@@ -1104,7 +1104,7 @@ body {
 .attempt-num {
   font-size: var(--text-2xl);
   font-weight: 900;
-  color: var(--accent);
+  color: var(--text);
   font-variant-numeric: tabular-nums;
   letter-spacing: -2px;
   line-height: 1;
@@ -1177,12 +1177,12 @@ body {
   display: inline-flex;
   align-items: center;
   padding: var(--sp-xs) var(--sp-md);
-  background: var(--accent-glow);
-  border: 1px solid var(--accent-dim);
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.10);
   border-radius: var(--radius-badge);
   font-size: var(--text-sm);
   font-weight: 700;
-  color: var(--accent-sm);        /* 13px — WCAG AA */
+  color: var(--sub);
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -1198,7 +1198,7 @@ body {
 
 /* ══ Topic rows ═════════════════════════════════════════════ */
 .mini-row--topic .mini-bar span { background: var(--accent); opacity: .7; }
-.mini-row--topic .mini-val      { color: var(--accent-sm); }  /* 13px — WCAG AA */
+.mini-row--topic .mini-val      { color: var(--sub); }
 
 .topic-cross-row {
   display: grid;
@@ -1212,7 +1212,7 @@ body {
 
 .topic-cross-row:last-child { border-bottom: none; }
 .cross-topic { font-weight: 500; color: var(--sub); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.cross-cats  { display: flex; flex-wrap: wrap; gap: var(--sp-xs); font-size: var(--text-xs); color: var(--accent-sm); font-weight: 600; }  /* 11px — WCAG AA */
+.cross-cats  { display: flex; flex-wrap: wrap; gap: var(--sp-xs); font-size: var(--text-xs); color: var(--muted); font-weight: 600; }
 
 /* ══ Collapsible list ════════════════════════════════════════ */
 .list-collapsible.collapsed > .list-item:nth-child(n+6) { display: none; }
